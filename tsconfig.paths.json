@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@libs/feat-play": ["libs/feat-play/index.ts"]
+    }
+  }
+}
