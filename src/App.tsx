@@ -1,5 +1,6 @@
-import React from "react";
 import { initializeApp } from "firebase/app";
+import "./App.css";
+import { PlayScene } from "./scenes";
 
 function App() {
   const firebaseConfig = {
@@ -14,7 +15,7 @@ function App() {
 
   initializeApp(firebaseConfig);
 
-  return <div>Hello</div>;
+  return <PlayScene />;
 }
 
 export default App;
