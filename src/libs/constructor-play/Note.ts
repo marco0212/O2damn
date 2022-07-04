@@ -1,8 +1,8 @@
+import { drawRoundRect } from "@libs/util-canvas";
 import { Column, ColumnOption } from "./Column";
 
 interface NoteOption extends ColumnOption {
   time: number;
-  speed: number;
 }
 
 const milisecond = 1000;
@@ -10,15 +10,47 @@ const milisecond = 1000;
 export class Note extends Column {
   private time: number;
   private speed: number;
-  private height = 30;
+  private height: number;
   private positionY = 0;
-  private isAlive = true;
+  private _mounted = false;
 
-  constructor({ time, speed, ...option }: NoteOption) {
+  constructor({ time, ...option }: NoteOption) {
     super(option);
     this.time = time;
-    this.speed = speed;
+    this.speed = window.engine.speed;
+    this.height = this.width / 3;
     this.positionY = window.innerHeight - this.height - this.time * this.speed;
+  }
+
+  private get mounted() {
+    return this._mounted;
+  }
+
+  private set mounted(value: boolean) {
+    if (this._mounted === value) {
+      return;
+    }
+
+    this._mounted = value;
+    this.onMount();
+  }
+
+  private get shouldRender() {
+    if (this.positionY < -this.height) {
+    }
+
+    if (
+      this.positionY < -this.height ||
+      this.positionY > window.engine.canvasElement.height
+    ) {
+      return false;
+    }
+
+    if (!this.mounted) {
+      this.mounted = true;
+    }
+
+    return true;
   }
 
   public update(
@@ -26,22 +58,33 @@ export class Note extends Column {
     currentTime: number,
     deltaTime: number
   ) {
-    if (!this.isAlive) {
+    this.positionY =
+      this.positionY + ((currentTime - deltaTime) / milisecond) * this.speed;
+
+    if (!this.shouldRender) {
       return;
     }
 
-    context.fillStyle = "yellow";
-
-    this.positionY =
-      this.positionY + ((currentTime - deltaTime) / milisecond) * this.speed;
-    this.draw(context);
-
-    if (this.positionY > window.innerHeight) {
-      this.isAlive = false;
-    }
+    context.fillStyle = `rgb(${this.color})`;
+    this.render(context);
   }
 
-  private draw(context: CanvasRenderingContext2D) {
+  public onDestroy() {
+    console.log("unmounted");
+  }
+
+  public onMount() {
+    console.log("mounted");
+  }
+
+  private render(context: CanvasRenderingContext2D) {
     context.fillRect(this.positionX, this.positionY, this.width, this.height);
+    drawRoundRect(context, {
+      x: this.positionX,
+      y: this.positionY,
+      width: this.width,
+      height: this.height,
+      fillColor: `rgb(${this.color})`,
+    });
   }
 }

@@ -1,33 +1,17 @@
 import { drawRoundRect } from "@libs/util-canvas";
 import stripeImage from "../../assets/stripe.png";
 import { Column, ColumnOption } from "./Column";
-import { RGB_COLORS } from "./constants";
 
 export class Interactor extends Column {
   private opacity = 0;
   private opacityStep = 0.03;
   private height = 75;
   private padding = 5;
-  private color: string;
   private backgroundColor = "#002f58";
   private positionY: number;
 
   constructor(option: ColumnOption) {
     super(option);
-
-    switch (this.index) {
-      case 0:
-      case 5:
-        this.color = RGB_COLORS[0];
-        break;
-      case 1:
-      case 4:
-        this.color = RGB_COLORS[1];
-        break;
-      default:
-        this.color = RGB_COLORS[2];
-        break;
-    }
 
     this.positionY = window.engine.canvasElement.height - this.height;
     this.activate = this.activate.bind(this);

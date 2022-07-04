@@ -3,8 +3,6 @@ import { Note } from "./Note";
 
 export class Engine {
   private canvasElement: HTMLCanvasElement;
-  private width: number;
-  private cellWidth: number;
   private speed = 500;
   private now = Date.now();
   private delta = Date.now();
@@ -15,6 +13,12 @@ export class Engine {
   private interactors: Interactor[];
 
   constructor(element: HTMLCanvasElement) {
+    window.engine = {
+      canvasElement: element,
+      keys: this.keys,
+      speed: this.speed,
+    };
+
     const context = element.getContext("2d");
 
     if (!context) {
@@ -25,50 +29,36 @@ export class Engine {
     const width = containerElement?.clientWidth ?? 300;
     const height = containerElement?.clientHeight ?? window.innerHeight - 90;
 
-    window.engine = {
-      canvasElement: element,
-    };
-
     this.canvasElement = element;
     this.context = context;
 
-    this.width = width;
+    this.canvasElement.width = width;
     this.canvasElement.height = height;
-    this.cellWidth = this.width / this.keys.length;
 
-    this.interactors = this.keys.map(
-      (key, index) => new Interactor({ key, index, width: this.cellWidth })
-    );
+    this.interactors = this.keys.map((key) => new Interactor({ key }));
 
     this.start = this.start.bind(this);
     this.update = this.update.bind(this);
   }
 
-  public setNotes(notes: Note[]) {
-    this.notes = notes.slice();
-  }
-
   public start() {
-    this.setNotes([
+    this.notes = [
       new Note({
         key: "a",
-        time: 10,
-        width: this.cellWidth,
-        index: 0,
-        speed: this.speed,
+        time: 1,
       }),
-    ]);
+    ];
+
     this.update();
   }
 
   public update() {
     this.now = Date.now();
     this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    this.interactors.forEach((interactor) => interactor.update(this.context));
     this.notes.forEach((note) =>
       note.update(this.context, this.now, this.delta)
     );
-
+    this.interactors.forEach((interactor) => interactor.update(this.context));
     this.time += this.now - this.delta;
     this.delta = this.now;
 
