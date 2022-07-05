@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 export function useGameController() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { increaseScore, initializeCombo } = usePlayContext();
+  const { increaseScore, increaseMissStat } = usePlayContext();
 
   useEffect(() => {
     const canvasElement = canvasRef.current;
@@ -15,7 +15,7 @@ export function useGameController() {
 
     const engine = new Engine(canvasElement, {
       onScore: increaseScore,
-      onMiss: initializeCombo,
+      onMiss: increaseMissStat,
     });
     const max = window.engine.keys.length;
     const maxTime = 10;
@@ -30,7 +30,7 @@ export function useGameController() {
     });
 
     engine.initialize(tempNotes);
-  }, [increaseScore, initializeCombo]);
+  }, [increaseScore, increaseMissStat]);
 
   return { canvasRef };
 }

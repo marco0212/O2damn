@@ -8,10 +8,11 @@ type PlayContextType = {
   status: Status;
   score: number;
   combo: number;
+  latestStat?: StatusLevel;
   playingSong?: string;
   selectSong: (songtitle: string) => void;
   increaseScore: (level: StatusLevel) => void;
-  initializeCombo: () => void;
+  increaseMissStat: () => void;
 };
 
 const PlayContext = createContext<PlayContextType | null>(null);
@@ -28,6 +29,7 @@ export const PlayProvider: FC<PropsWithChildren> = ({ children }) => {
   const [status, setStatus] = useState<Status>(initialStatus);
   const [score, setScore] = useState(0);
   const [combo, setCombo] = useState(0);
+  const [latestStat, setLatestStat] = useState<StatusLevel>();
 
   const calculateScore = (level: StatusLevel) => {
     switch (level) {
@@ -54,6 +56,9 @@ export const PlayProvider: FC<PropsWithChildren> = ({ children }) => {
   };
 
   const increaseScore = useCallback((level: StatusLevel) => {
+    setLatestStat(level);
+    setStatus((status) => ({ ...status, [level]: status[level] + 1 }));
+
     setCombo((prevCombo) => {
       const nextCombo = prevCombo + 1;
       setScore((prevScore) => {
@@ -64,11 +69,16 @@ export const PlayProvider: FC<PropsWithChildren> = ({ children }) => {
 
       return nextCombo;
     });
-    setStatus((status) => ({ ...status, [level]: status[level] + 1 }));
   }, []);
 
-  const initializeCombo = useCallback(() => {
+  const increaseMissStat = useCallback(() => {
     setCombo(0);
+    setLatestStat("miss");
+
+    setStatus((status) => {
+      const prevMiss = status.miss;
+      return Object.assign({}, status, { miss: prevMiss + 1 });
+    });
   }, []);
 
   return (
@@ -78,9 +88,10 @@ export const PlayProvider: FC<PropsWithChildren> = ({ children }) => {
         status,
         score,
         combo,
+        latestStat,
         selectSong,
         increaseScore,
-        initializeCombo,
+        increaseMissStat,
       }}
     >
       {children}
