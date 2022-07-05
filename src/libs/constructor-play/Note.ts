@@ -1,25 +1,32 @@
 import { drawRoundRect } from "@libs/util-canvas";
 import { Column, ColumnOption } from "./Column";
+import { MILISECOND } from "./constants";
 
 interface NoteOption extends ColumnOption {
   time: number;
+  onDestroy: (note: Note) => void;
 }
 
-const milisecond = 1000;
-
 export class Note extends Column {
-  private time: number;
+  public time: number;
   private speed: number;
   private height: number;
   private positionY = 0;
   private _mounted = false;
+  private onDestroy: (note: Note) => void;
 
-  constructor({ time, ...option }: NoteOption) {
+  constructor({ time, onDestroy, ...option }: NoteOption) {
     super(option);
     this.time = time;
     this.speed = window.engine.speed;
     this.height = this.width / 3;
-    this.positionY = window.innerHeight - this.height - this.time * this.speed;
+    const interactorHeight = 75;
+    this.positionY =
+      window.engine.canvasElement.height -
+      interactorHeight -
+      this.height -
+      this.time * this.speed;
+    this.onDestroy = onDestroy;
   }
 
   private get mounted() {
@@ -32,13 +39,9 @@ export class Note extends Column {
     }
 
     this._mounted = value;
-    this.onMount();
   }
 
   private get shouldRender() {
-    if (this.positionY < -this.height) {
-    }
-
     if (
       this.positionY < -this.height ||
       this.positionY > window.engine.canvasElement.height
@@ -53,13 +56,24 @@ export class Note extends Column {
     return true;
   }
 
+  public destroy() {
+    this.onDestroy(this);
+  }
+
   public update(
     context: CanvasRenderingContext2D,
-    currentTime: number,
-    deltaTime: number
+    now: number,
+    delta: number,
+    currentTime: number
   ) {
-    this.positionY =
-      this.positionY + ((currentTime - deltaTime) / milisecond) * this.speed;
+    const extraTimeForAnimation = this.height / this.speed;
+
+    if (currentTime > this.time + extraTimeForAnimation) {
+      this.destroy();
+    }
+
+    const diffTimeBetweenAnimationFrame = (now - delta) / MILISECOND;
+    this.positionY += diffTimeBetweenAnimationFrame * this.speed;
 
     if (!this.shouldRender) {
       return;
@@ -67,14 +81,6 @@ export class Note extends Column {
 
     context.fillStyle = `rgb(${this.color})`;
     this.render(context);
-  }
-
-  public onDestroy() {
-    console.log("unmounted");
-  }
-
-  public onMount() {
-    console.log("mounted");
   }
 
   private render(context: CanvasRenderingContext2D) {

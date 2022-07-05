@@ -12,8 +12,19 @@ export function useGameController() {
     }
 
     const engine = new Engine(canvasElement);
+    const max = window.engine.keys.length;
+    const maxTime = 3;
 
-    engine.start();
+    const tempNotes = new Array(1).fill(null).map((_) => {
+      const maxKeyRandomIndex = Math.floor(Math.random() * max);
+
+      return {
+        time: parseFloat((Math.random() * maxTime).toFixed(1)),
+        key: window.engine.keys[maxKeyRandomIndex],
+      };
+    });
+
+    engine.initialize(tempNotes);
   }, []);
 
   return { canvasRef };

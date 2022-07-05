@@ -2,6 +2,9 @@ import { drawRoundRect } from "@libs/util-canvas";
 import stripeImage from "../../assets/stripe.png";
 import { Column, ColumnOption } from "./Column";
 
+interface InteractorOption extends ColumnOption {
+  onPress: (key: string) => void;
+}
 export class Interactor extends Column {
   private opacity = 0;
   private opacityStep = 0.03;
@@ -9,11 +12,13 @@ export class Interactor extends Column {
   private padding = 5;
   private backgroundColor = "#002f58";
   private positionY: number;
+  private onPress: (key: string) => void;
 
-  constructor(option: ColumnOption) {
+  constructor({ onPress, ...option }: InteractorOption) {
     super(option);
 
     this.positionY = window.engine.canvasElement.height - this.height;
+    this.onPress = onPress;
     this.activate = this.activate.bind(this);
     this.update = this.update.bind(this);
     this.set();
@@ -26,6 +31,7 @@ export class Interactor extends Column {
   private activate(event: KeyboardEvent) {
     if (event.key === this.key) {
       this.opacity = 1;
+      this.onPress(this.key);
     }
   }
 

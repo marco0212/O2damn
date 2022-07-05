@@ -7,7 +7,7 @@ export interface ColumnOption {
 export class Column {
   protected width: number;
   protected index: number;
-  protected key: string;
+  public key: string;
   protected positionX: number;
   protected color: string;
 
