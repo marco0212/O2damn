@@ -11,6 +11,7 @@ type PlayContextType = {
   playingSong?: string;
   selectSong: (songtitle: string) => void;
   increaseScore: (level: StatusLevel) => void;
+  initializeCombo: () => void;
 };
 
 const PlayContext = createContext<PlayContextType | null>(null);
@@ -66,6 +67,10 @@ export const PlayProvider: FC<PropsWithChildren> = ({ children }) => {
     setStatus((status) => ({ ...status, [level]: status[level] + 1 }));
   }, []);
 
+  const initializeCombo = useCallback(() => {
+    setCombo(0);
+  }, []);
+
   return (
     <PlayContext.Provider
       value={{
@@ -75,6 +80,7 @@ export const PlayProvider: FC<PropsWithChildren> = ({ children }) => {
         combo,
         selectSong,
         increaseScore,
+        initializeCombo,
       }}
     >
       {children}

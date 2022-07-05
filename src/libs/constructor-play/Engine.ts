@@ -6,6 +6,7 @@ import { Note } from "./Note";
 type RowNotes = { key: string; time: number };
 type EngineOption = {
   onScore: (level: StatusLevel) => void;
+  onMiss: () => void;
 };
 
 export class Engine {
@@ -20,8 +21,9 @@ export class Engine {
   private notes?: Note[];
   private interactors: Interactor[];
   private onScore: (level: StatusLevel) => void;
+  private onMiss: () => void;
 
-  constructor(element: HTMLCanvasElement, { onScore }: EngineOption) {
+  constructor(element: HTMLCanvasElement, { onScore, onMiss }: EngineOption) {
     window.engine = {
       canvasElement: element,
       keys: this.keys,
@@ -45,8 +47,10 @@ export class Engine {
     this.canvasElement.height = height;
 
     this.onScore = onScore;
+    this.onMiss = onMiss;
     this.update = this.update.bind(this);
     this.attempToScore = this.attempToScore.bind(this);
+    this.missNote = this.missNote.bind(this);
     this.removeNote = this.removeNote.bind(this);
 
     this.interactors = this.keys.map(
@@ -60,7 +64,7 @@ export class Engine {
     }
 
     const noteArray = rowNotes.map(
-      ({ key, time }) => new Note({ key, time, onDestroy: this.removeNote })
+      ({ key, time }) => new Note({ key, time, onMiss: this.missNote })
     );
     const notes = noteArray.sort((prev, next) => prev.time - next.time);
 
@@ -110,6 +114,10 @@ export class Engine {
     this.notes = this.notes.filter((note) => note !== targetNote);
   }
 
+  private missNote(targetNote: Note) {
+    this.onMiss();
+    this.removeNote(targetNote);
+  }
   private renderNotes() {
     if (!this.notes) {
       throw new Error("initialized가 실행되어야 합니다.");

@@ -4,7 +4,7 @@ import { MILISECOND } from "./constants";
 
 interface NoteOption extends ColumnOption {
   time: number;
-  onDestroy: (note: Note) => void;
+  onMiss: (note: Note) => void;
 }
 
 export class Note extends Column {
@@ -13,9 +13,9 @@ export class Note extends Column {
   private height: number;
   private positionY = 0;
   private _mounted = false;
-  private onDestroy: (note: Note) => void;
+  private onMiss: (note: Note) => void;
 
-  constructor({ time, onDestroy, ...option }: NoteOption) {
+  constructor({ time, onMiss, ...option }: NoteOption) {
     super(option);
     this.time = time;
     this.speed = window.engine.speed;
@@ -26,7 +26,7 @@ export class Note extends Column {
       interactorHeight -
       this.height -
       this.time * this.speed;
-    this.onDestroy = onDestroy;
+    this.onMiss = onMiss;
   }
 
   private get mounted() {
@@ -56,10 +56,6 @@ export class Note extends Column {
     return true;
   }
 
-  public destroy() {
-    this.onDestroy(this);
-  }
-
   public update(
     context: CanvasRenderingContext2D,
     now: number,
@@ -67,12 +63,14 @@ export class Note extends Column {
     currentTime: number
   ) {
     const extraTimeForAnimation = this.height / this.speed;
+    const isLateToInteract = currentTime > this.time + extraTimeForAnimation;
 
-    if (currentTime > this.time + extraTimeForAnimation) {
-      this.destroy();
+    if (isLateToInteract) {
+      this.onMiss(this);
     }
 
     const diffTimeBetweenAnimationFrame = (now - delta) / MILISECOND;
+
     this.positionY += diffTimeBetweenAnimationFrame * this.speed;
 
     if (!this.shouldRender) {
