@@ -1,8 +1,10 @@
 import { Engine } from "@libs/constructor-play";
+import { usePlayContext } from "@libs/provider-play";
 import { useEffect, useRef } from "react";
 
 export function useGameController() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { increaseScore } = usePlayContext();
 
   useEffect(() => {
     const canvasElement = canvasRef.current;
@@ -11,11 +13,11 @@ export function useGameController() {
       return;
     }
 
-    const engine = new Engine(canvasElement);
+    const engine = new Engine(canvasElement, { onScore: increaseScore });
     const max = window.engine.keys.length;
-    const maxTime = 3;
+    const maxTime = 10;
 
-    const tempNotes = new Array(1).fill(null).map((_) => {
+    const tempNotes = new Array(10).fill(null).map((_) => {
       const maxKeyRandomIndex = Math.floor(Math.random() * max);
 
       return {
@@ -25,7 +27,7 @@ export function useGameController() {
     });
 
     engine.initialize(tempNotes);
-  }, []);
+  }, [increaseScore]);
 
   return { canvasRef };
 }

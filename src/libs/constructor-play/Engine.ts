@@ -1,12 +1,17 @@
+import { StatusLevel } from "@libs/provider-play";
 import { MILISECOND } from "./constants";
 import { Interactor } from "./Interactor";
 import { Note } from "./Note";
 
 type RowNotes = { key: string; time: number };
+type EngineOption = {
+  onScore: (level: StatusLevel) => void;
+};
 
 export class Engine {
   private canvasElement: HTMLCanvasElement;
   private speed = 300;
+  private difficulty = 1000; // 값이 클수록 판정의 감도가 높아집니다
   private now = Date.now();
   private delta = Date.now();
   private time = 0;
@@ -14,8 +19,9 @@ export class Engine {
   private keys = ["a", "s", "d", "j", "k", "l"];
   private notes?: Note[];
   private interactors: Interactor[];
+  private onScore: (level: StatusLevel) => void;
 
-  constructor(element: HTMLCanvasElement) {
+  constructor(element: HTMLCanvasElement, { onScore }: EngineOption) {
     window.engine = {
       canvasElement: element,
       keys: this.keys,
@@ -38,6 +44,7 @@ export class Engine {
     this.canvasElement.width = width;
     this.canvasElement.height = height;
 
+    this.onScore = onScore;
     this.update = this.update.bind(this);
     this.attempToScore = this.attempToScore.bind(this);
     this.removeNote = this.removeNote.bind(this);
@@ -79,8 +86,7 @@ export class Engine {
     const diffTimeBetweenExactNoteAndInputPressed = Math.abs(
       targetNote.time - this.time
     );
-    const randomDifficulty = 1000;
-    const preAttemptableTime = this.speed / randomDifficulty;
+    const preAttemptableTime = this.speed / this.difficulty;
     const isJudgeable =
       diffTimeBetweenExactNoteAndInputPressed < preAttemptableTime;
 
@@ -88,9 +94,11 @@ export class Engine {
       return;
     }
 
-    const calculatedStat = "excellent";
+    const calculatedStat = this.calculateScoreStat(
+      diffTimeBetweenExactNoteAndInputPressed
+    );
 
-    // this.onScored(calculatedStat);
+    this.onScore(calculatedStat);
     this.removeNote(targetNote);
   }
 
@@ -110,6 +118,20 @@ export class Engine {
     this.notes.forEach((note) =>
       note.update(this.context, this.now, this.delta, this.time)
     );
+  }
+
+  private calculateScoreStat(diffTime: number): StatusLevel {
+    const maxTimeToScore = this.speed / this.difficulty;
+
+    if (diffTime <= maxTimeToScore / 3) {
+      return "excellent";
+    }
+
+    if (diffTime <= maxTimeToScore / 2) {
+      return "good";
+    }
+
+    return "off beat";
   }
 
   private renderInteractor() {

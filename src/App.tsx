@@ -1,3 +1,4 @@
+import { PlayProvider } from "@libs/provider-play";
 import { initializeApp } from "firebase/app";
 import { useEffect } from "react";
 import "./App.css";
@@ -18,7 +19,11 @@ function App() {
     initializeApp(firebaseConfig);
   }, []);
 
-  return <PlayScene />;
+  return (
+    <PlayProvider>
+      <PlayScene />
+    </PlayProvider>
+  );
 }
 
 export default App;

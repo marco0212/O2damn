@@ -1,3 +1,9 @@
+import { usePlayContext } from "@libs/provider-play";
+
 export function useStatusBar() {
-  return {};
+  const { status, score } = usePlayContext();
+  return {
+    status,
+    score,
+  };
 }
