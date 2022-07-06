@@ -1,8 +1,8 @@
+import { NavigatorProvider } from "@libs/provider-navigator";
 import { PlayProvider } from "@libs/provider-play";
 import { initializeApp } from "firebase/app";
 import { useEffect } from "react";
 import "./App.css";
-import { PlayScene } from "./scenes";
 
 function App() {
   useEffect(() => {
@@ -21,7 +21,7 @@ function App() {
 
   return (
     <PlayProvider>
-      <PlayScene />
+      <NavigatorProvider />
     </PlayProvider>
   );
 }
