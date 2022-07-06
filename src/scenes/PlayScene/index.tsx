@@ -1,4 +1,4 @@
-import { StatusBar, GameController } from "@libs/feat-play";
+import { StatusBar, GameController, SoundPresenter } from "@libs/feat-play";
 import styled from "styled-components";
 
 export const PlayScene = () => {
@@ -6,6 +6,7 @@ export const PlayScene = () => {
     <Container>
       <GameController />
       <StatusBar />
+      <SoundPresenter />
     </Container>
   );
 };

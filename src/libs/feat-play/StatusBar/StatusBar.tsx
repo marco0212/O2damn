@@ -2,37 +2,40 @@ import { bind } from "@libs/util-structure";
 import styled from "styled-components";
 import { useStatusBar } from "./useStatusBar";
 
-export const StatusBar = bind(useStatusBar, ({ status, score }) => {
-  return (
-    <Container>
-      <StatusBox>
-        <StatusName>Score</StatusName>
-        <StatusContent>{score}</StatusContent>
-      </StatusBox>
-      <StatusBox>
-        <StatusName>Now playing</StatusName>
-        <StatusContent>Fuck it</StatusContent>
-      </StatusBox>
-      <StatusBox>
-        <StatusName>Stats</StatusName>
-        <StatFieldGroup>
-          <StatField>
-            <strong>Excellent</strong> {status.excellent}
-          </StatField>
-          <StatField>
-            <strong>Good</strong> {status.good}
-          </StatField>
-          <StatField>
-            <strong>Off Beat</strong> {status["off beat"]}
-          </StatField>
-          <StatField>
-            <strong>Miss</strong> {status.miss}
-          </StatField>
-        </StatFieldGroup>
-      </StatusBox>
-    </Container>
-  );
-});
+export const StatusBar = bind(
+  useStatusBar,
+  ({ status, score, playingSongTitle }) => {
+    return (
+      <Container>
+        <StatusBox>
+          <StatusName>Score</StatusName>
+          <StatusContent>{score}</StatusContent>
+        </StatusBox>
+        <StatusBox>
+          <StatusName>Now playing</StatusName>
+          <StatusContent>{playingSongTitle}</StatusContent>
+        </StatusBox>
+        <StatusBox>
+          <StatusName>Stats</StatusName>
+          <StatFieldGroup>
+            <StatField>
+              <strong>Excellent</strong> {status.excellent}
+            </StatField>
+            <StatField>
+              <strong>Good</strong> {status.good}
+            </StatField>
+            <StatField>
+              <strong>Off Beat</strong> {status["off beat"]}
+            </StatField>
+            <StatField>
+              <strong>Miss</strong> {status.miss}
+            </StatField>
+          </StatFieldGroup>
+        </StatusBox>
+      </Container>
+    );
+  }
+);
 
 const Container = styled.div`
   padding: 15px;

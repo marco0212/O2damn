@@ -1,16 +1,21 @@
 import { Engine } from "@libs/constructor-play";
 import { usePlayContext } from "@libs/provider-play";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import testSong from "./temp.json";
 
 export function useGameController() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
   const { increaseScore, increaseMissStat } = usePlayContext();
 
-  useEffect(() => {
+  const playSongAndStartEngine = (
+    event: React.SyntheticEvent<HTMLAudioElement, Event>
+  ) => {
     const canvasElement = canvasRef.current;
+    const audioElement = audioRef.current;
 
-    if (!canvasElement) {
+    if (!canvasElement || !audioElement) {
       return;
     }
 
@@ -19,8 +24,9 @@ export function useGameController() {
       onMiss: increaseMissStat,
     });
 
+    event.currentTarget.play();
     engine.initialize(testSong);
-  }, [increaseScore, increaseMissStat]);
+  };
 
-  return { canvasRef };
+  return { canvasRef, audioRef, playSongAndStartEngine };
 }
