@@ -1,7 +1,7 @@
 import { COLUMN_RGB_COLORS } from "./constants";
 
 export interface ColumnOption {
-  key: string;
+  index: number;
 }
 
 export class Column {
@@ -11,11 +11,11 @@ export class Column {
   protected positionX: number;
   protected color: string;
 
-  constructor({ key: keyProps }: ColumnOption) {
+  constructor({ index }: ColumnOption) {
     const { keys, canvasElement } = window.engine;
+    this.index = index;
     this.width = canvasElement.width / keys.length;
-    this.key = keyProps;
-    this.index = keys.findIndex((key) => key === keyProps);
+    this.key = keys[index];
     this.positionX = this.width * this.index;
 
     switch (this.index) {

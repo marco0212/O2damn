@@ -3,7 +3,8 @@ import { MILISECOND } from "./constants";
 import { Interactor } from "./Interactor";
 import { Note } from "./Note";
 
-type RowNotes = { key: string; time: number };
+type RowNotes = { key: number; time: number };
+
 type EngineOption = {
   onScore: (level: StatusLevel) => void;
   onMiss: () => void;
@@ -54,7 +55,7 @@ export class Engine {
     this.removeNote = this.removeNote.bind(this);
 
     this.interactors = this.keys.map(
-      (key) => new Interactor({ key, onPress: this.attempToScore })
+      (_, index) => new Interactor({ index, onPress: this.attempToScore })
     );
   }
 
@@ -64,7 +65,8 @@ export class Engine {
     }
 
     const noteArray = rowNotes.map(
-      ({ key, time }) => new Note({ key, time, onMiss: this.missNote })
+      ({ key: keyIndex, time }) =>
+        new Note({ index: keyIndex, time, onMiss: this.missNote })
     );
     const notes = noteArray.sort((prev, next) => prev.time - next.time);
 

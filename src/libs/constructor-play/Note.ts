@@ -82,11 +82,12 @@ export class Note extends Column {
   }
 
   private render(context: CanvasRenderingContext2D) {
-    context.fillRect(this.positionX, this.positionY, this.width, this.height);
+    const sideBorderWidth = 2;
+
     drawRoundRect(context, {
-      x: this.positionX,
+      x: this.positionX + sideBorderWidth,
       y: this.positionY,
-      width: this.width,
+      width: this.width - sideBorderWidth * 2,
       height: this.height,
       fillColor: `rgb(${this.color})`,
     });
