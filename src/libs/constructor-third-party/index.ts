@@ -1,0 +1,1 @@
+export { firebaseService } from "./FirebaseService";
