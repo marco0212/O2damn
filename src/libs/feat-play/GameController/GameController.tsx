@@ -6,12 +6,13 @@ import song from "../../../assets/for_my_friend.mp3";
 
 export const GameController = bind(
   useGameController,
-  ({ canvasRef, audioRef, playSongAndStartEngine }) => {
+  ({ canvasRef, audioRef, playSongAndStartEngine, moveToResultScene }) => {
     return (
       <Container>
         <audio
           ref={audioRef}
           onCanPlay={playSongAndStartEngine}
+          onEnded={moveToResultScene}
           autoPlay
           muted={false}
         >

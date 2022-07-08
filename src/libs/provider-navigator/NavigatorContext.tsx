@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import { PlayScene, ResultScene } from "../../scenes";
 
-type Scenes = "home" | "list" | "play" | "result";
+export type Scenes = "home" | "list" | "play" | "result";
 
 type NavigatorContextType = {
   navigate: (to: Scenes) => void;
@@ -23,7 +23,7 @@ export const NavigatorProvider = () => {
       case "result":
         return ResultScene;
       default:
-        return PlayScene;
+        return ResultScene;
     }
   }, [currentScene]);
 

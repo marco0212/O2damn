@@ -1,4 +1,5 @@
 import { Engine } from "@libs/constructor-play";
+import { useNavigatorContext } from "@libs/provider-navigator";
 import { usePlayContext } from "@libs/provider-play";
 import { useRef } from "react";
 import testSong from "./temp.json";
@@ -8,6 +9,11 @@ export function useGameController() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { increaseScore, increaseMissStat } = usePlayContext();
+  const { navigate } = useNavigatorContext();
+
+  const moveToResultScene = () => {
+    navigate("result");
+  };
 
   const playSongAndStartEngine = (
     event: React.SyntheticEvent<HTMLAudioElement, Event>
@@ -28,5 +34,5 @@ export function useGameController() {
     engine.initialize(testSong);
   };
 
-  return { canvasRef, audioRef, playSongAndStartEngine };
+  return { canvasRef, audioRef, playSongAndStartEngine, moveToResultScene };
 }
