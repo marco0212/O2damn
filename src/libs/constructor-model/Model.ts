@@ -18,7 +18,10 @@ export class Model<T> {
 
   public async find(): Promise<T[]> {
     const listRef = ref(this.db, this.namespace);
-    const result = await get(listRef);
-    return result.val();
+    const snapshot = await get(listRef);
+    const value = snapshot.val() as Record<string, T>;
+    const keys: string[] = Object.keys(value);
+
+    return keys.map((key) => ({ id: key, ...value[key] }));
   }
 }
