@@ -14,6 +14,8 @@ export class Model<T> {
     const listRef = ref(this.db, this.namespace);
     const newEntityRef = push(listRef);
     set(newEntityRef, entity);
+
+    return { key: newEntityRef.key, ...entity };
   }
 
   public async find(): Promise<T[]> {
