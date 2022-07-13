@@ -7,6 +7,7 @@ export function useGameController() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const engineRef = useRef<Engine | null>(null);
   const delay = 2000;
 
   const { increaseScore, increaseMissStat, initializeState, song, notes } =
@@ -20,21 +21,14 @@ export function useGameController() {
   const playSongAndStartEngine = (
     event: React.SyntheticEvent<HTMLAudioElement, Event>
   ) => {
-    const canvasElement = canvasRef.current;
+    const engine = engineRef.current;
     const audioElement = audioRef.current;
 
-    if (!canvasElement || !audioElement) {
+    if (!engine || !audioElement) {
       return;
     }
 
-    const engine = new Engine(canvasElement, {
-      delay,
-      onScore: increaseScore,
-      onMiss: increaseMissStat,
-    });
-
     engine.initialize(notes);
-
     const { currentTarget } = event;
 
     timerRef.current = setTimeout(() => {
@@ -47,13 +41,32 @@ export function useGameController() {
   }, [initializeState]);
 
   useEffect(() => {
+    const canvasElement = canvasRef.current;
+
+    if (!canvasElement) {
+      return;
+    }
+
+    engineRef.current = new Engine(canvasElement, {
+      delay,
+      onScore: increaseScore,
+      onMiss: increaseMissStat,
+    });
+
     return () => {
+      const engine = engineRef.current;
       const timer = timerRef.current;
+
+      if (engine) {
+        engine.destroy();
+      }
+
       if (timer) {
         clearTimeout(timer);
       }
     };
-  });
+  }, [increaseMissStat, increaseScore]);
+
   return {
     canvasRef,
     audioRef,

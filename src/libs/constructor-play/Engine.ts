@@ -6,6 +6,7 @@ import { Note } from "./Note";
 type RowNotes = { key: number; time: number };
 
 type EngineOption = {
+  delay: number;
   onScore: (level: StatusLevel) => void;
   onMiss: () => void;
 };
@@ -23,8 +24,13 @@ export class Engine {
   private interactors: Interactor[];
   private onScore: (level: StatusLevel) => void;
   private onMiss: () => void;
+  private delay: number;
+  private animationId?: number;
 
-  constructor(element: HTMLCanvasElement, { onScore, onMiss }: EngineOption) {
+  constructor(
+    element: HTMLCanvasElement,
+    { delay, onScore, onMiss }: EngineOption
+  ) {
     window.engine = {
       canvasElement: element,
       keys: this.keys,
@@ -41,6 +47,7 @@ export class Engine {
     const width = containerElement?.clientWidth ?? 300;
     const height = containerElement?.clientHeight ?? window.innerHeight - 90;
 
+    this.delay = delay;
     this.canvasElement = element;
     this.context = context;
 
@@ -64,17 +71,20 @@ export class Engine {
       throw new Error("최소 하나 이상 노트가 있어야 합니다");
     }
 
-    const noteArray = rowNotes.map(
-      ({ key: keyIndex, time }) =>
-        new Note({ index: keyIndex, time, onMiss: this.missNote })
-    );
+    const noteArray = rowNotes.map(({ key: keyIndex, time }) => {
+      return new Note({
+        index: keyIndex,
+        time: time + this.delay / MILISECOND,
+        onMiss: this.missNote,
+      });
+    });
     const notes = noteArray.sort((prev, next) => prev.time - next.time);
 
     this.notes = notes;
     this.start();
   }
 
-  public start() {
+  private start() {
     this.update();
   }
 
@@ -147,7 +157,7 @@ export class Engine {
   private renderInteractor() {
     this.interactors.forEach((interactor) => interactor.update(this.context));
   }
-  public update() {
+  private update() {
     this.now = Date.now();
     this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
@@ -158,8 +168,16 @@ export class Engine {
     this.renderNotes();
     this.renderInteractor();
 
-    window.requestAnimationFrame(this.update);
+    this.animationId = window.requestAnimationFrame(this.update);
 
     this.delta = this.now;
+  }
+
+  public destroy() {
+    if (!this.animationId) {
+      return;
+    }
+
+    cancelAnimationFrame(this.animationId);
   }
 }

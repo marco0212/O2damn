@@ -18,7 +18,7 @@ type NavigatorContextType = {
 const NavigatorContext = createContext<NavigatorContextType | null>(null);
 
 export const NavigatorProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [currentScene, setCurrentScene] = useState<Scenes>("list");
+  const [currentScene, setCurrentScene] = useState<Scenes>("home");
 
   const navigate = (to: Scenes) => {
     setCurrentScene(to);
@@ -53,7 +53,7 @@ export const Switch = () => {
       case "list":
         return ListScene;
       default:
-        return ResultScene;
+        return ListScene;
     }
   }, [currentScene]);
 
