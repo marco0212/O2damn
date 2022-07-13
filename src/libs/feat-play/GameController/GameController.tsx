@@ -2,21 +2,29 @@ import { bind } from "@libs/util-structure";
 import styled from "styled-components";
 import { ComboIndicator } from "../ComboIndicator";
 import { useGameController } from "./useGameController";
-import song from "../../../assets/for_my_friend.mp3";
 
 export const GameController = bind(
   useGameController,
-  ({ canvasRef, audioRef, playSongAndStartEngine, moveToResultScene }) => {
+  ({
+    canvasRef,
+    audioRef,
+    song,
+    playSongAndStartEngine,
+    moveToResultScene,
+  }) => {
+    if (!song) {
+      return null;
+    }
+
     return (
       <Container>
         <audio
           ref={audioRef}
           onCanPlay={playSongAndStartEngine}
           onEnded={moveToResultScene}
-          autoPlay
           muted={false}
         >
-          <source src={song} />
+          <source src={song.file} />
         </audio>
         <Controller ref={canvasRef} />
         <ComboIndicator />

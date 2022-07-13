@@ -1,14 +1,16 @@
 import { Engine } from "@libs/constructor-play";
 import { useNavigatorContext } from "@libs/provider-navigator";
 import { usePlayContext } from "@libs/provider-play";
-import { useRef } from "react";
-import testSong from "./temp.json";
+import { useEffect, useRef } from "react";
 
 export function useGameController() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const delay = 2000;
 
-  const { increaseScore, increaseMissStat } = usePlayContext();
+  const { increaseScore, increaseMissStat, initializeState, song, notes } =
+    usePlayContext();
   const { navigate } = useNavigatorContext();
 
   const moveToResultScene = () => {
@@ -26,13 +28,37 @@ export function useGameController() {
     }
 
     const engine = new Engine(canvasElement, {
+      delay,
       onScore: increaseScore,
       onMiss: increaseMissStat,
     });
 
-    event.currentTarget.play();
-    engine.initialize(testSong);
+    engine.initialize(notes);
+
+    const { currentTarget } = event;
+
+    timerRef.current = setTimeout(() => {
+      currentTarget.play();
+    }, delay);
   };
 
-  return { canvasRef, audioRef, playSongAndStartEngine, moveToResultScene };
+  useEffect(() => {
+    initializeState();
+  }, [initializeState]);
+
+  useEffect(() => {
+    return () => {
+      const timer = timerRef.current;
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  });
+  return {
+    canvasRef,
+    audioRef,
+    playSongAndStartEngine,
+    moveToResultScene,
+    song,
+  };
 }
