@@ -5,16 +5,17 @@ import { RecordList } from "../RecordList";
 
 export const Records = bind(
   useRecords,
-  ({ username, setUsername, loading, addRecord }) => {
+  ({ username, setUsername, loading, addRecord, records, mutationCalled }) => {
     return (
       <>
-        <RecordList username={username} />
+        <RecordList records={records} />
         <RecordForm
           value={username}
           placeholder="Type your name"
           onChange={(event) => setUsername(event.currentTarget.value)}
           onSubmit={addRecord}
           loading={loading}
+          disabled={mutationCalled}
         />
       </>
     );

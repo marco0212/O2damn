@@ -9,6 +9,7 @@ type RecordFormProps = {
   loading: boolean;
   onChange(event: React.ChangeEvent<HTMLInputElement>): void;
   onSubmit(): void;
+  disabled?: boolean;
 };
 
 export const RecordForm: FC<PropsWithChildren<RecordFormProps>> = ({
@@ -17,6 +18,7 @@ export const RecordForm: FC<PropsWithChildren<RecordFormProps>> = ({
   loading,
   onSubmit: onSubmitProps,
   placeholder,
+  disabled,
 }) => {
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -24,13 +26,34 @@ export const RecordForm: FC<PropsWithChildren<RecordFormProps>> = ({
     onSubmitProps();
   };
 
+  const buttonText = () => {
+    if (disabled) {
+      return "Done";
+    }
+
+    if (loading) {
+      return "Loading";
+    }
+
+    return "Submit";
+  };
+
   return (
     <Container>
       <Paper title="Check your score and break record">
         <Form onSubmit={onSubmit}>
-          <Input value={value} onChange={onChange} placeholder={placeholder} />
-          <Button color="primary" loading={loading} disabled={!value}>
-            {loading ? "Loading" : "Submit"}
+          <Input
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            readOnly={disabled}
+          />
+          <Button
+            color="primary"
+            loading={loading}
+            disabled={!value || disabled}
+          >
+            {buttonText()}
           </Button>
         </Form>
       </Paper>

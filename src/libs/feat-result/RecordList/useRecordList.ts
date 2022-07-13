@@ -1,11 +1,22 @@
-import { usePlayContext } from "@libs/provider-play";
+import type { Record } from "@libs/constructor-model";
+import { useEffect, useRef } from "react";
 
 type UseRecordListProps = {
-  username: string;
+  records: Record[];
 };
 
-export function useRecordList({ username }: UseRecordListProps) {
-  const { score } = usePlayContext();
+export function useRecordList({ records }: UseRecordListProps) {
+  const listRef = useRef<HTMLUListElement>(null);
 
-  return { score, username };
+  useEffect(() => {
+    const element = listRef.current;
+
+    if (!element) {
+      return;
+    }
+
+    element.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  return { listRef, records };
 }

@@ -1,19 +1,42 @@
+import { Record } from "@libs/constructor-model";
 import { usePlayContext } from "@libs/provider-play";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useRecordListQuery } from "./operation";
+import { useAddRecordMutation } from "./operation/useAddRecordMutation";
 
 export function useRecords() {
   const [username, setUsername] = useState("");
-  const { score } = usePlayContext();
-  const [loading, setLoading] = useState(false);
+  const { score, song } = usePlayContext();
+  const { records } = useRecordListQuery();
+  const [addRecordMutation, { called: mutationCalled, loading }] =
+    useAddRecordMutation();
 
-  const addRecord = async () => {
-    setLoading(true);
+  const presentedRecords = useMemo(() => {
+    const nowPlayingRecord: Record = {
+      username,
+      score,
+      id: "",
+    };
 
-    // request mutating data
-    console.log({ score, username });
+    const result = mutationCalled ? records : [nowPlayingRecord, ...records];
 
-    setLoading(false);
+    return result.sort((prev, next) => next.score - prev.score);
+  }, [mutationCalled, records, score, username]);
+
+  const addRecord = useCallback(() => {
+    if (!song || mutationCalled) {
+      return;
+    }
+
+    addRecordMutation(song.id, { score, username });
+  }, [addRecordMutation, mutationCalled, score, song, username]);
+
+  return {
+    username,
+    setUsername,
+    loading,
+    addRecord,
+    records: presentedRecords,
+    mutationCalled,
   };
-
-  return { username, setUsername, loading, addRecord };
 }

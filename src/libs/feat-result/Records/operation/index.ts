@@ -1,0 +1,1 @@
+export { useRecordListQuery } from "./useRecordListQuery";
