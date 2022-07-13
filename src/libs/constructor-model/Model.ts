@@ -1,6 +1,15 @@
 import { firebaseService } from "@libs/constructor-third-party";
-import { Database, get, getDatabase, push, ref, set } from "firebase/database";
+import {
+  Database,
+  get,
+  getDatabase,
+  onValue,
+  push,
+  ref,
+  set,
+} from "firebase/database";
 
+type OperationOption = { path?: string };
 export class Model<T> {
   private db: Database;
   private namespace: string;
@@ -10,20 +19,50 @@ export class Model<T> {
     this.namespace = collectionName;
   }
 
-  public async create(entity: Omit<T, "id">) {
-    const listRef = ref(this.db, this.namespace);
-    const newEntityRef = push(listRef);
-    set(newEntityRef, entity);
+  public async appendTo(entity: Omit<T, "id">, option?: OperationOption) {
+    const path = option?.path ?? "";
+    const targetEntityRef = ref(this.db, `${this.namespace}/${path}`);
+    const childLocation = push(targetEntityRef);
+    set(childLocation, { ...entity, id: childLocation.key });
 
-    return { key: newEntityRef.key, ...entity };
+    return { id: childLocation.key, ...entity };
   }
 
-  public async find(): Promise<T[]> {
-    const listRef = ref(this.db, this.namespace);
-    const snapshot = await get(listRef);
+  public async find(option?: OperationOption): Promise<T[]> {
+    const path = option?.path ?? "";
+    const targetRef = ref(this.db, `${this.namespace}/${path}`);
+    const snapshot = await get(targetRef);
     const value = snapshot.val() as Record<string, T>;
-    const keys: string[] = Object.keys(value);
+    return this.convetToArray(value);
+  }
 
-    return keys.map((key) => ({ id: key, ...value[key] }));
+  public async findOne({ path }: Required<OperationOption>) {
+    const targetRef = ref(this.db, `${this.namespace}/${path}`);
+    const snapshot = await get(targetRef);
+    return { ...snapshot.val(), id: path } as T;
+  }
+
+  public onChange(
+    callback: (value: T[] | null) => void,
+    option?: OperationOption
+  ) {
+    const path = option?.path ?? "";
+    const listRef = ref(this.db, `${this.namespace}/${path}`);
+    const unsubscribe = onValue(listRef, (snapshot) => {
+      const value = snapshot.val() as Record<string, T> | null;
+
+      if (!value) {
+        callback(value);
+      } else {
+        callback(this.convetToArray(value));
+      }
+    });
+
+    return unsubscribe;
+  }
+
+  private convetToArray(collection: Record<string, T>) {
+    const keys: string[] = Object.keys(collection);
+    return keys.map((key) => ({ id: key, ...collection[key] }));
   }
 }

@@ -5,7 +5,7 @@ export type Note = {
   time: number;
 };
 
-class NoteModel extends Model<Note[]> {
+class NoteModel extends Model<Note> {
   constructor() {
     super("notes");
   }

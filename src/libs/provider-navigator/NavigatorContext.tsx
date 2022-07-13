@@ -1,35 +1,32 @@
-import { createContext, useContext, useMemo, useState } from "react";
-import { PlayScene, ResultScene } from "../../scenes";
+import {
+  createContext,
+  FC,
+  PropsWithChildren,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
+import { PlayScene, ResultScene, ListScene } from "../../scenes";
 
 export type Scenes = "home" | "list" | "play" | "result";
 
 type NavigatorContextType = {
+  currentScene: Scenes;
   navigate: (to: Scenes) => void;
 };
 
 const NavigatorContext = createContext<NavigatorContextType | null>(null);
 
-export const NavigatorProvider = () => {
-  const [currentScene, setCurrentScene] = useState<Scenes>("home");
+export const NavigatorProvider: FC<PropsWithChildren> = ({ children }) => {
+  const [currentScene, setCurrentScene] = useState<Scenes>("list");
 
   const navigate = (to: Scenes) => {
     setCurrentScene(to);
   };
 
-  const CurrentScene = useMemo(() => {
-    switch (currentScene) {
-      case "play":
-        return PlayScene;
-      case "result":
-        return ResultScene;
-      default:
-        return ResultScene;
-    }
-  }, [currentScene]);
-
   return (
-    <NavigatorContext.Provider value={{ navigate }}>
-      <CurrentScene />
+    <NavigatorContext.Provider value={{ navigate, currentScene }}>
+      {children}
     </NavigatorContext.Provider>
   );
 };
@@ -43,3 +40,22 @@ export function useNavigatorContext() {
 
   return context;
 }
+
+export const Switch = () => {
+  const { currentScene } = useNavigatorContext();
+
+  const CurrentScene = useMemo(() => {
+    switch (currentScene) {
+      case "play":
+        return PlayScene;
+      case "result":
+        return ResultScene;
+      case "list":
+        return ListScene;
+      default:
+        return ResultScene;
+    }
+  }, [currentScene]);
+
+  return <CurrentScene />;
+};

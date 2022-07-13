@@ -4,7 +4,6 @@ export type Record = {
   id: string;
   username: string;
   score: number;
-  songId: string;
 };
 
 class RecordModel extends Model<Record> {

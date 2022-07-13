@@ -1,4 +1,8 @@
-import { useCallback, useContext } from "react";
+import { Song } from "@libs/constructor-model";
+import { Note } from "@libs/constructor-model/NoteModel";
+import { useBackendContext } from "@libs/provider-backend";
+import { useNavigatorContext } from "@libs/provider-navigator";
+import { useCallback, useContext, useMemo } from "react";
 import { createContext, FC, PropsWithChildren, useState } from "react";
 
 export type StatusLevel = "excellent" | "good" | "off beat" | "miss";
@@ -8,28 +12,37 @@ type PlayContextType = {
   status: Status;
   score: number;
   combo: number;
-  latestStat?: StatusLevel;
-  playingSongTitle?: string;
-  selectSong: (songtitle: string) => void;
+  latestStat: StatusLevel | null;
+  song: Song | null;
+  notes: Note[];
+  selectSong: (songId: string) => void;
   increaseScore: (level: StatusLevel) => void;
   increaseMissStat: () => void;
+  initializeState: () => void;
 };
 
 const PlayContext = createContext<PlayContextType | null>(null);
 
 export const PlayProvider: FC<PropsWithChildren> = ({ children }) => {
-  const initialStatus = {
-    excellent: 0,
-    good: 0,
-    "off beat": 0,
-    miss: 0,
-  };
+  const initialStatus = useMemo(
+    () => ({
+      excellent: 0,
+      good: 0,
+      "off beat": 0,
+      miss: 0,
+    }),
+    []
+  );
 
-  const [playingSongTitle, setPlayingSongTitle] = useState<string>();
   const [status, setStatus] = useState<Status>(initialStatus);
   const [score, setScore] = useState(0);
   const [combo, setCombo] = useState(0);
-  const [latestStat, setLatestStat] = useState<StatusLevel>();
+  const [song, setSong] = useState<Song | null>(null);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [latestStat, setLatestStat] = useState<StatusLevel | null>(null);
+
+  const { songService } = useBackendContext();
+  const { navigate } = useNavigatorContext();
 
   const calculateScore = (level: StatusLevel) => {
     switch (level) {
@@ -44,15 +57,18 @@ export const PlayProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
-  const initialize = () => {
+  const initializeState = useCallback(() => {
     setStatus(initialStatus);
+    setLatestStat(null);
     setScore(0);
     setCombo(0);
-  };
+  }, [initialStatus]);
 
-  const selectSong = (songTitle: string) => {
-    initialize();
-    setPlayingSongTitle(songTitle);
+  const selectSong = async (songId: string) => {
+    const { notes, ...song } = await songService.getSongWithNote(songId);
+    setSong(song);
+    setNotes(notes);
+    navigate("play");
   };
 
   const increaseScore = useCallback((level: StatusLevel) => {
@@ -84,7 +100,8 @@ export const PlayProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <PlayContext.Provider
       value={{
-        playingSongTitle,
+        song,
+        notes,
         status,
         score,
         combo,
@@ -92,6 +109,7 @@ export const PlayProvider: FC<PropsWithChildren> = ({ children }) => {
         selectSong,
         increaseScore,
         increaseMissStat,
+        initializeState,
       }}
     >
       {children}
