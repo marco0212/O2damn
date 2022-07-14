@@ -92,4 +92,8 @@ export class Interactor extends Column {
     this.renderActive(context);
     this.renderController(context);
   }
+
+  public destroy() {
+    window.removeEventListener("keydown", this.activate);
+  }
 }

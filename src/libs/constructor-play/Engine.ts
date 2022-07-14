@@ -174,6 +174,7 @@ export class Engine {
   }
 
   public destroy() {
+    this.interactors.forEach((interactor) => interactor.destroy());
     if (!this.animationId) {
       return;
     }
