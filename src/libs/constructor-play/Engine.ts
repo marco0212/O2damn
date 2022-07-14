@@ -163,8 +163,6 @@ export class Engine {
 
     this.time += (this.now - this.delta) / MILISECOND;
 
-    this.context.font = "40px serif";
-    this.context.fillText(`time: ${this.time}`, 50, 50);
     this.renderNotes();
     this.renderInteractor();
 
