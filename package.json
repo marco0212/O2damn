@@ -23,6 +23,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
+    "deploy": "yarn build && firebase deploy",
     "test": "craco test",
     "eject": "react-scripts eject"
   },
