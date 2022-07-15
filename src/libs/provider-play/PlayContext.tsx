@@ -23,7 +23,7 @@ type PlayContextType = {
 
 const PlayContext = createContext<PlayContextType | null>(null);
 
-export const PlayProvider: FC<PropsWithChildren> = ({ children }) => {
+export const PlayProvider: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const initialStatus = useMemo(
     () => ({
       excellent: 0,

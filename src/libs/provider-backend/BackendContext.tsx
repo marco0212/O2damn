@@ -15,7 +15,9 @@ type BackEndContext = {
 
 const BackendContext = createContext<BackEndContext | null>(null);
 
-export const BackendProvider: FC<PropsWithChildren> = ({ children }) => {
+export const BackendProvider: FC<PropsWithChildren<unknown>> = ({
+  children,
+}) => {
   const { current: recordService } = useRef(new RecordService());
   const { current: songService } = useRef(new SongService());
 

@@ -17,7 +17,9 @@ type NavigatorContextType = {
 
 const NavigatorContext = createContext<NavigatorContextType | null>(null);
 
-export const NavigatorProvider: FC<PropsWithChildren> = ({ children }) => {
+export const NavigatorProvider: FC<PropsWithChildren<unknown>> = ({
+  children,
+}) => {
   const [currentScene, setCurrentScene] = useState<Scenes>("home");
 
   const navigate = (to: Scenes) => {

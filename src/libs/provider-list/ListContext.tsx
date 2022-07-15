@@ -20,7 +20,7 @@ type ListContextType = {
 
 const ListContext = createContext<ListContextType | null>(null);
 
-export const ListProvider: FC<PropsWithChildren> = ({ children }) => {
+export const ListProvider: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [songs, setSongs] = useState<Song[] | null>(null);
