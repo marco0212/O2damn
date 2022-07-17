@@ -3,18 +3,23 @@ import styled from "styled-components";
 
 export const NavigatorButtons = () => (
   <Container>
-    <Button color="primary" to="play">
-      Play Again
+    <Button color="secondary" fill to="list">
+      Home
     </Button>
-    <Button color="secondary" to="list">
-      Exit
+    <Button color="secondary" fill to="play">
+      Retry
+    </Button>
+    <Button color="secondary" fill disabled>
+      Feedback
+    </Button>
+    <Button color="secondary" fill disabled>
+      Share
     </Button>
   </Container>
 );
 
 const Container = styled.div`
+  flex: 1;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   gap: 15px;
 `;

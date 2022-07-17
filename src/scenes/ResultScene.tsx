@@ -17,7 +17,7 @@ const Container = styled.div`
   height: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 1fr;
+  grid-template-rows: 1fr 45px;
   grid-gap: 30px;
   padding: 30px;
 `;

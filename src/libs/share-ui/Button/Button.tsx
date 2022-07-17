@@ -1,12 +1,13 @@
 import { Scenes, useNavigatorContext } from "@libs/provider-navigator";
 import { FC, PropsWithChildren } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 type ButtonProps = {
   color: "primary" | "secondary";
   to?: Scenes;
   loading?: boolean;
   disabled?: boolean;
+  fill?: boolean;
   onClick?(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
 };
 
@@ -16,6 +17,7 @@ export const Button: FC<PropsWithChildren<ButtonProps>> = ({
   disabled,
   loading,
   to,
+  fill,
   children,
 }) => {
   const color = {
@@ -38,13 +40,18 @@ export const Button: FC<PropsWithChildren<ButtonProps>> = ({
   };
 
   return (
-    <Container onClick={onClick} disabled={loading || disabled} color={color}>
+    <Container
+      onClick={onClick}
+      disabled={loading || disabled}
+      color={color}
+      fill={fill}
+    >
       {children}
     </Container>
   );
 };
 
-const Container = styled.button<{ color: string }>`
+const Container = styled.button<{ color: string; fill?: boolean }>`
   border: 0;
   padding: 0 30px;
   font-size: 18px;
@@ -54,6 +61,13 @@ const Container = styled.button<{ color: string }>`
   border-radius: 4px;
   background-color: ${(props) => props.color};
   cursor: pointer;
+
+  ${(props) =>
+    props.fill &&
+    css`
+      display: block;
+      width: 100%;
+    `}
 
   &:disabled {
     background-color: gray;

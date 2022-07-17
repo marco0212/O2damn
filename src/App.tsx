@@ -1,4 +1,5 @@
 import "@libs/constructor-third-party";
+import { AuthProvider } from "@libs/provider-auth/AuthContext";
 import { BackendProvider } from "@libs/provider-backend/BackendContext";
 import { ListProvider } from "@libs/provider-list";
 import { NavigatorProvider, Switch } from "@libs/provider-navigator";
@@ -9,11 +10,13 @@ function App() {
   return (
     <NavigatorProvider>
       <BackendProvider>
-        <ListProvider>
-          <PlayProvider>
-            <Switch />
-          </PlayProvider>
-        </ListProvider>
+        <AuthProvider>
+          <ListProvider>
+            <PlayProvider>
+              <Switch />
+            </PlayProvider>
+          </ListProvider>
+        </AuthProvider>
       </BackendProvider>
     </NavigatorProvider>
   );

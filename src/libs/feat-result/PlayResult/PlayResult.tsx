@@ -5,32 +5,43 @@ import { usePlayResult } from "./usePlayResult";
 
 export const PlayResult = bind(usePlayResult, ({ status, score }) => {
   return (
-    <Paper title="PlayResult">
-      <StatList>
-        <StatListItem>
-          <em>Excellent</em>
-          <span>{status.excellent}</span>
-        </StatListItem>
-        <StatListItem>
-          <em>Good</em>
-          <span>{status.good}</span>
-        </StatListItem>
-        <StatListItem>
-          <em>Off Beat</em>
-          <span>{status["off beat"]}</span>
-        </StatListItem>
-        <StatListItem>
-          <em>Miss</em>
-          <span>{status.miss}</span>
-        </StatListItem>
-        <StatListItem>
-          <Score>Score</Score>
-          <Score>{score}</Score>
-        </StatListItem>
-      </StatList>
-    </Paper>
+    <Container>
+      <Paper title="PlayResult">
+        <StatList>
+          <StatListItem>
+            <em>Excellent</em>
+            <span>{status.excellent}</span>
+          </StatListItem>
+          <StatListItem>
+            <em>Good</em>
+            <span>{status.good}</span>
+          </StatListItem>
+          <StatListItem>
+            <em>Off Beat</em>
+            <span>{status["off beat"]}</span>
+          </StatListItem>
+          <StatListItem>
+            <em>Miss</em>
+            <span>{status.miss}</span>
+          </StatListItem>
+          <StatListItem>
+            <Score>Score</Score>
+            <Score>{score}</Score>
+          </StatListItem>
+        </StatList>
+      </Paper>
+    </Container>
   );
 });
+
+const Container = styled.div`
+  grid-column: 1;
+  grid-row: 1;
+
+  & > * {
+    height: 100%;
+  }
+`;
 
 const StatList = styled.ul`
   font-size: 20px;

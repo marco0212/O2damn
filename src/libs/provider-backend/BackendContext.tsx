@@ -1,5 +1,8 @@
-import { RecordService } from "@libs/constructor-service";
-import { SongService } from "@libs/constructor-service/SongService";
+import {
+  RecordService,
+  SongService,
+  AuthService,
+} from "@libs/constructor-service";
 import {
   createContext,
   FC,
@@ -11,6 +14,7 @@ import {
 type BackEndContext = {
   recordService: RecordService;
   songService: SongService;
+  authService: AuthService;
 };
 
 const BackendContext = createContext<BackEndContext | null>(null);
@@ -20,12 +24,14 @@ export const BackendProvider: FC<PropsWithChildren<unknown>> = ({
 }) => {
   const { current: recordService } = useRef(new RecordService());
   const { current: songService } = useRef(new SongService());
+  const { current: authService } = useRef(new AuthService());
 
   return (
     <BackendContext.Provider
       value={{
         recordService,
         songService,
+        authService,
       }}
     >
       {children}
