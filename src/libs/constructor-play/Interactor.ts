@@ -85,6 +85,17 @@ export class Interactor extends Column {
       strokeColor: "white",
       fillColor: `rgba(${this.color}, ${this.opacity})`,
     });
+
+    context.font = "bold 25px sans-serif";
+    context.fillStyle = "white";
+    context.textBaseline = "middle";
+    context.textAlign = "center";
+    context.fillText(
+      this.key.toUpperCase(),
+      this.positionX + this.width / 2,
+      this.positionY + this.height / 2,
+      this.width
+    );
   }
 
   public update(context: CanvasRenderingContext2D) {
