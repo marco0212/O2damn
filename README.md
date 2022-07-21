@@ -2,6 +2,8 @@
 
 [http://www.o2damn.fun/](http://www.o2damn.fun/)
 
+![ezgif com-gif-maker (4)](https://user-images.githubusercontent.com/50050459/180132732-3a80a83f-d754-4b31-b367-827b0c20bda3.gif)
+
 ## Introduction
 
 `O2 Damn`은 캔버스와 리액트를 사용해 만든 웹 게임입니다. 노래의 리듬에 맞춰 키를 눌러 높은 점수를 획득하고 랭킹에 이름을 올려 유저들과 경쟁할 수 있습니다.
@@ -24,4 +26,4 @@ Game key : A, S, D, J, K, L
 **_참고 자료_**
 
 - [https://www.viget.com/articles/time-based-animation](https://www.viget.com/articles/time-based-animation)
-- [https://en.wikipedia.org/wiki/Object-oriented_programming](https://en.wikipedia.org/wiki/Object-oriented_programming)
+- [https://www.kirupa.com/html5/animating_with_requestAnimationFrame.htm](https://www.kirupa.com/html5/animating_with_requestAnimationFrame.htm)
