@@ -46,7 +46,7 @@ export const AuthProvider: FC<PropsWithChildren<unknown>> = ({ children }) => {
   };
 
   useEffect(() => {
-    authService.onAuthStateChanged((user: any) => {
+    authService.onAuthStateChanged((user) => {
       if (!user) {
         return;
       }

@@ -1,4 +1,3 @@
-import "@libs/constructor-third-party";
 import { AuthProvider } from "@libs/provider-auth/AuthContext";
 import { BackendProvider } from "@libs/provider-backend/BackendContext";
 import { ListProvider } from "@libs/provider-list";
