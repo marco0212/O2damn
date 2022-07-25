@@ -36,10 +36,10 @@ export class Model<T> {
     return this.convetToArray(value);
   }
 
-  public async findOne({ path }: Required<OperationOption>) {
+  public async findOne({ path }: Required<OperationOption>): Promise<T> {
     const targetRef = ref(this.db, `${this.namespace}/${path}`);
     const snapshot = await get(targetRef);
-    return { ...snapshot.val(), id: path } as T;
+    return { ...snapshot.val(), id: path };
   }
 
   public onChange(

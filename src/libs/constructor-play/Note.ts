@@ -62,7 +62,7 @@ export class Note extends Column {
     delta: number,
     currentTime: number
   ) {
-    const extraTimeForAnimation = this.height / this.speed;
+    const extraTimeForAnimation = this.height / this.speed; // time = distance / speed
     const isLateToInteract = currentTime > this.time + extraTimeForAnimation;
 
     if (isLateToInteract) {
@@ -71,7 +71,7 @@ export class Note extends Column {
 
     const diffTimeBetweenAnimationFrame = (now - delta) / MILISECOND;
 
-    this.positionY += diffTimeBetweenAnimationFrame * this.speed;
+    this.positionY += diffTimeBetweenAnimationFrame * this.speed; // distance += time * speed
 
     if (!this.shouldRender) {
       return;
