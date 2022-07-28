@@ -1,15 +1,15 @@
 import { StatusBar, GameController, SoundPresenter } from "@libs/feat-play";
 import styled from "styled-components";
 
-export const PlayScene = () => {
-  return (
-    <Container>
-      <GameController />
-      <StatusBar />
-      <SoundPresenter />
-    </Container>
-  );
-};
+const PlayScene = () => (
+  <Container>
+    <GameController />
+    <StatusBar />
+    <SoundPresenter />
+  </Container>
+);
+
+export default PlayScene;
 
 const Container = styled.div`
   display: grid;

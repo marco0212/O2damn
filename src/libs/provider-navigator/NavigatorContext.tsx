@@ -1,12 +1,15 @@
+import { Spinner } from "@libs/share-ui";
 import {
   createContext,
   FC,
+  lazy,
   PropsWithChildren,
+  Suspense,
   useContext,
   useMemo,
   useState,
 } from "react";
-import { PlayScene, ResultScene, ListScene } from "../../scenes";
+import styled from "styled-components";
 
 export type Scenes = "home" | "list" | "play" | "result";
 
@@ -43,6 +46,10 @@ export function useNavigatorContext() {
   return context;
 }
 
+const PlayScene = lazy(() => import("../../scenes/PlayScene"));
+const ListScene = lazy(() => import("../../scenes/ListScene"));
+const ResultScene = lazy(() => import("../../scenes/ResultScene"));
+
 export const Switch = () => {
   const { currentScene } = useNavigatorContext();
 
@@ -59,5 +66,23 @@ export const Switch = () => {
     }
   }, [currentScene]);
 
-  return <CurrentScene />;
+  return (
+    <Suspense
+      fallback={
+        <FallbackContainer>
+          <Spinner />
+        </FallbackContainer>
+      }
+    >
+      <CurrentScene />
+    </Suspense>
+  );
 };
+
+const FallbackContainer = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

@@ -18,7 +18,7 @@ export const SongList = bind(
 
     return (
       <Container>
-        <ul ref={null}>
+        <ul>
           {songs.map(({ id, artist, title }) => {
             return (
               <SongItem

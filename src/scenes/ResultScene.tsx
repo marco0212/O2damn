@@ -1,15 +1,15 @@
 import { NavigatorButtons, PlayResult, Records } from "@libs/feat-result";
 import styled from "styled-components";
 
-export const ResultScene = () => {
-  return (
-    <Container>
-      <PlayResult />
-      <Records />
-      <NavigatorButtons />
-    </Container>
-  );
-};
+const ResultScene = () => (
+  <Container>
+    <PlayResult />
+    <Records />
+    <NavigatorButtons />
+  </Container>
+);
+
+export default ResultScene;
 
 const Container = styled.div`
   background-color: #f1f1f1;
