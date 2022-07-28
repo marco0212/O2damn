@@ -37,7 +37,7 @@ export const Records = bind(
           >
             {mutationCalled ? "Thanks" : "Save"}
           </Button>
-          <LoginModal opened={true} onClose={closeModal} />
+          <LoginModal opened={isModalOpen} onClose={closeModal} />
         </Paper>
       </Container>
     );
