@@ -2,6 +2,7 @@ import { Spinner } from "@libs/share-ui";
 import {
   createContext,
   FC,
+  Fragment,
   lazy,
   PropsWithChildren,
   Suspense,
@@ -46,6 +47,7 @@ export function useNavigatorContext() {
   return context;
 }
 
+const HomeScene = lazy(() => import("../../scenes/HomeScene"));
 const PlayScene = lazy(() => import("../../scenes/PlayScene"));
 const ListScene = lazy(() => import("../../scenes/ListScene"));
 const ResultScene = lazy(() => import("../../scenes/ResultScene"));
@@ -61,8 +63,10 @@ export const Switch = () => {
         return ResultScene;
       case "list":
         return ListScene;
+      case "home":
+        return HomeScene;
       default:
-        return ListScene;
+        return Fragment;
     }
   }, [currentScene]);
 
